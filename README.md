@@ -69,7 +69,9 @@ EDA-PowerBI-Sales
 
 ---
 
-## 🧹 Data Preprocessing
+```
+🧹 Data Preprocessing
+
 
 ```python
 import pandas as pd
@@ -82,8 +84,9 @@ print(df.dtypes)
 print(df.isnull().sum() # check nulls
 
 # Fix date columns
-df['Order Date']  = pd.to_datetime(df['Order Date'], dayfirst=True)
-df['Ship Date']   = pd.to_datetime(df['Ship Date'],  dayfirst=True)
+df['Order Date'] = pd.to_datetime(df['Order Date'])
+
+df['Ship Date'] = pd.to_datetime(df['Ship Date'])
 
 # Extract time features
 df['Order Year']  = df['Order Date'].dt.year
@@ -97,152 +100,178 @@ df['Is Loss'] = df['Profit'] < 0
 # Save cleaned file
 df.to_csv('data/superstore_cleaned.csv', index=False)
 print("Cleaned dataset saved.")
-```
+
+No missing values found. Key engineered features: Order Year, Order Month, Ship Days, Is Loss.
 
 **No missing values found.** Key engineered features: `Order Year`, `Order Month`, `Ship Days`, `Is Loss`.
 
 ---
-
+```
 ## 📊 Exploratory Data Analysis
 
 ### 1. Sales & profit by region
 
 ```python
+import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+df = pd.read_csv("data/superstore_cleaned.csv")
+
+print(df.head())
 
 region_summary = df.groupby('Region').agg(
-    Total_Sales   = ('Sales',  'sum'),
-    Total_Profit  = ('Profit', 'sum'),
-    Order_Count   = ('Order ID', 'nunique')
-).reset_index().sort_values('Total_Sales', ascending=False)
+    Total_Sales=('Sales','sum'),
+    Total_Profit=('Profit','sum'),
+    Order_Count=('Order ID','nunique')
+).reset_index()
 
-region_summary['Profit Margin (%)'] = (
-    region_summary['Total_Profit'] / region_summary['Total_Sales'] * 100
-).round(1)
+fig, axes = plt.subplots(1,2,figsize=(12,5))
 
-print(region_summary)
+axes[0].bar(region_summary['Region'],region_summary['Total_Sales'])
+axes[0].set_title("Sales by Region")
 
-fig, axes = plt.subplots(1, 2, figsize=(12, 5))
-
-axes[0].bar(region_summary['Region'], region_summary['Total_Sales'],
-            color=['#185FA5','#2E75B6','#5B9BD5','#9DC3E6'])
-axes[0].set_title('Total Sales by Region')
-axes[0].set_ylabel('Sales ($)')
-
-axes[1].bar(region_summary['Region'], region_summary['Total_Profit'],
-            color=['#0F6E56','#1D9E75','#5DCAA5','#9FE1CB'])
-axes[1].set_title('Total Profit by Region')
-axes[1].set_ylabel('Profit ($)')
-axes[1].axhline(0, color='red', linewidth=0.8, linestyle='--')
+axes[1].bar(region_summary['Region'],region_summary['Total_Profit'])
+axes[1].set_title("Profit by Region")
 
 plt.tight_layout()
-plt.savefig('outputs/figures/sales_profit_by_region.png', dpi=150)
+
+plt.savefig("outputs/figures/sales_profit_by_region.png")
+
 plt.show()
+
 ```
 
 ### 2. Monthly sales trend (seasonality)
 
 ```python
-monthly = df.groupby(['Order Year', 'Order Month'])[['Sales', 'Profit']].sum().reset_index()
+monthly = df.groupby(['Order Year', 'Order Month'])['Sales'].sum().reset_index()
 
-fig, ax = plt.subplots(figsize=(14, 5))
+plt.figure(figsize=(12,5))
+
 for year in monthly['Order Year'].unique():
     subset = monthly[monthly['Order Year'] == year]
-    ax.plot(subset['Order Month'], subset['Sales'],
-            marker='o', label=str(year), linewidth=2)
+    plt.plot(subset['Order Month'],
+             subset['Sales'],
+             marker='o',
+             linewidth=2,
+             label=str(year))
 
-ax.set_title('Monthly Sales Trend by Year')
-ax.set_xlabel('Month')
-ax.set_ylabel('Sales ($)')
-ax.set_xticks(range(1, 13))
-ax.set_xticklabels(['Jan','Feb','Mar','Apr','May','Jun',
-                    'Jul','Aug','Sep','Oct','Nov','Dec'])
-ax.legend(title='Year')
+plt.title("Monthly Sales Trend")
+plt.xlabel("Month")
+plt.ylabel("Sales")
+
+plt.xticks(range(1,13),
+['Jan','Feb','Mar','Apr','May','Jun',
+ 'Jul','Aug','Sep','Oct','Nov','Dec'])
+
+plt.legend(title="Year")
+
 plt.tight_layout()
-plt.savefig('outputs/figures/monthly_sales_trend.png', dpi=150)
+
+plt.savefig("outputs/figures/monthly_sales_trend.png")
+
 plt.show()
+
 ```
 
 ### 3. Category & sub-category breakdown
 
 ```python
 subcat = df.groupby('Sub-Category').agg(
-    Sales  = ('Sales', 'sum'),
-    Profit = ('Profit', 'sum')
-).reset_index().sort_values('Profit')
+    Sales=('Sales','sum'),
+    Profit=('Profit','sum')
+).reset_index()
 
-colors = ['#E24B4A' if p < 0 else '#185FA5' for p in subcat['Profit']]
+subcat = subcat.sort_values('Profit')
 
-fig, axes = plt.subplots(1, 2, figsize=(14, 6))
+colors = ['red' if x < 0 else 'steelblue' for x in subcat['Profit']]
 
-axes[0].barh(subcat['Sub-Category'], subcat['Sales'], color='#185FA5')
-axes[0].set_title('Sales by Sub-Category')
-axes[0].set_xlabel('Sales ($)')
+plt.figure(figsize=(12,7))
 
-axes[1].barh(subcat['Sub-Category'], subcat['Profit'], color=colors)
-axes[1].axvline(0, color='black', linewidth=0.8)
-axes[1].set_title('Profit by Sub-Category (red = loss)')
-axes[1].set_xlabel('Profit ($)')
+plt.barh(subcat['Sub-Category'],
+         subcat['Profit'],
+         color=colors)
+
+plt.axvline(0,color='black')
+
+plt.title("Profit by Sub-Category")
 
 plt.tight_layout()
-plt.savefig('outputs/figures/subcat_sales_profit.png', dpi=150)
+
+plt.savefig("outputs/figures/subcategory_profit.png")
+
 plt.show()
+
 ```
 
 ### 4. Discount vs profit correlation
 
 ```python
-fig, ax = plt.subplots(figsize=(8, 5))
-ax.scatter(df['Discount'], df['Profit'],
-           alpha=0.3, color='#185FA5', edgecolors='none', s=20)
-ax.axhline(0, color='red', linewidth=1, linestyle='--')
-ax.set_title('Discount vs Profit — Is Discounting Hurting Us?')
-ax.set_xlabel('Discount Rate')
-ax.set_ylabel('Profit ($)')
+plt.figure(figsize=(8,5))
 
-corr = df['Discount'].corr(df['Profit'])
-ax.text(0.55, ax.get_ylim()[1]*0.85,
-        f'Correlation: {corr:.2f}', fontsize=12, color='red')
+plt.scatter(df['Discount'],
+            df['Profit'],
+            alpha=0.4)
+
+plt.axhline(0,color='red')
+
+plt.title("Discount vs Profit")
+
+plt.xlabel("Discount")
+
+plt.ylabel("Profit")
 
 plt.tight_layout()
-plt.savefig('outputs/figures/discount_vs_profit.png', dpi=150)
+
+plt.savefig("outputs/figures/discount_vs_profit.png")
+
 plt.show()
 ```
 
 ### 5. Shipping speed analysis
 
 ```python
-ship_mode = df.groupby('Ship Mode').agg(
-    Avg_Ship_Days = ('Ship Days', 'mean'),
-    Order_Count   = ('Order ID', 'count'),
-    Avg_Profit    = ('Profit', 'mean')
-).reset_index().round(2)
+ship = df.groupby('Ship Mode')['Ship Days'].mean()
 
-print(ship_mode)
+plt.figure(figsize=(8,5))
 
-sns.boxplot(data=df, x='Ship Mode', y='Ship Days',
-            order=['Same Day','First Class','Second Class','Standard Class'],
-            palette='Blues')
-plt.title('Shipping Days Distribution by Ship Mode')
+plt.bar(ship.index,
+        ship.values)
+
+plt.title("Average Shipping Days")
+
+plt.ylabel("Days")
+
+plt.xticks(rotation=15)
+
 plt.tight_layout()
-plt.savefig('outputs/figures/ship_mode_days.png', dpi=150)
+
+plt.savefig("outputs/figures/shipping_days.png")
+
 plt.show()
 ```
 
 ### 6. Correlation heatmap
 
 ```python
-numeric_cols = ['Sales', 'Quantity', 'Discount', 'Profit', 'Ship Days']
-corr_matrix  = df[numeric_cols].corr()
+corr = df[['Sales',
+           'Profit',
+           'Quantity',
+           'Discount',
+           'Ship Days']].corr()
 
-plt.figure(figsize=(7, 5))
-sns.heatmap(corr_matrix, annot=True, fmt='.2f',
-            cmap='Blues', linewidths=0.5,
-            cbar_kws={'shrink': 0.8})
-plt.title('Feature Correlation Heatmap')
+plt.figure(figsize=(8,6))
+
+sns.heatmap(corr,
+            annot=True,
+            cmap='Blues')
+
+plt.title("Correlation Heatmap")
+
 plt.tight_layout()
-plt.savefig('outputs/figures/correlation_heatmap.png', dpi=150)
+
+plt.savefig("outputs/figures/correlation_heatmap.png")
+
 plt.show()
 ```
 
