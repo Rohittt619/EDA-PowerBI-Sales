@@ -1,4 +1,4 @@
-��﻿# 📊 Sales EDA & Power BI Dashboard
+﻿# 📊 Sales EDA & Power BI Dashboard
 
 > End-to-end sales analysis — Python EDA uncovering business insights, visualized in an interactive Power BI dashboard.
 
