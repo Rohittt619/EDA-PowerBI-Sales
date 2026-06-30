@@ -69,10 +69,9 @@ EDA-PowerBI-Sales
 
 ---
 
-## 🧹 Data Preprocessing
+🧹 Data Preprocessing
 
-```python
-import pandas as pd
+pythonimport pandas as pd
 import numpy as np
 
 df = pd.read_csv('data/superstore.csv', encoding='latin-1')
@@ -97,7 +96,8 @@ df['Is Loss'] = df['Profit'] < 0
 # Save cleaned file
 df.to_csv('data/superstore_cleaned.csv', index=False)
 print("Cleaned dataset saved.")
-```
+
+No missing values found. Key engineered features: Order Year, Order Month, Ship Days, Is Loss.
 
 **No missing values found.** Key engineered features: `Order Year`, `Order Month`, `Ship Days`, `Is Loss`.
 
