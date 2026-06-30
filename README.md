@@ -69,10 +69,13 @@ EDA-PowerBI-Sales
 
 ---
 
+```
 🧹 Data Preprocessing
 
-pythonimport pandas as pd
-import numpy as np
+
+```python
+import pandas as pd
+
 
 df = pd.read_csv('data/superstore.csv', encoding='latin-1')
 
