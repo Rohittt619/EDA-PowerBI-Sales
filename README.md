@@ -25,17 +25,9 @@ This project performs a full sales analysis on the **Superstore dataset** (9,994
 
 ## 📸 Dashboard Preview
 
-> Built in Power BI Desktop — 3 pages: Overview, Product Analysis, Customer Segments
+> Built in Power BI Desktop — 1 page: Overview
 
 ![Dashboard Overview](outputs/dashboard_overview.png)
-
-### Product Analysis
-
-![Product Analysis](outputs/dashboard_products.png)
-
-### Customer Segments
-
-![Customer Segments](outputs/dashboard_customers.png)
 
 ---
 
