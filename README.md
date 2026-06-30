@@ -39,24 +39,33 @@ This project performs a full sales analysis on the **Superstore dataset** (9,994
 ## 🗂️ Project Structure
 
 ```
-EDA-PowerBI-Sales/
+EDA-PowerBI-Sales
 │
-├── data/
-│   ├── superstore.csv              # raw dataset from Kaggle
-│   └── superstore_cleaned.csv     # after Python preprocessing
+├── data
+│   ├── superstore.csv
+│   └── superstore_cleaned.csv
 │
-├── powerbi/
-│   └── Sales_Dashboard.pbix       # Power BI dashboard file
+├── outputs
+│   ├── dashboard_overview.png
+│   ├── dashboard_products.png
+│   ├── dashboard_customers.png
+│   └── figures
+│       ├── correlation_heatmap.png
+│       ├── discount_vs_profit.png
+│       ├── monthly_sales_trend.png
+│       ├── sales_profit_by_region.png
+│       ├── shipping_days.png
+│       └── subcategory_profit.png
 │
-├── outputs/
-│   ├── dashboard_overview.png     # screenshot — page 1
-│   ├── dashboard_products.png     # screenshot — page 2
-│   ├── dashboard_customers.png    # screenshot — page 3
-│   └── figures/                   # all Python charts (PNG)
+├── powerbi
+│   └── Sales_Dashboard.pbix
+│
+├── scripts
+│   ├── preprocessing.py
+│   └── eda.py
 │
 ├── requirements.txt
 └── README.md
-```
 
 ---
 
