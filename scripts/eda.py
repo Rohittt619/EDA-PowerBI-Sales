@@ -114,7 +114,7 @@ plt.show()
 
 
 # -----------------------------
-# Shipping Analysis
+# Shipping sped Analysis
 # -----------------------------
 
 ship = df.groupby('Ship Mode')['Ship Days'].mean()

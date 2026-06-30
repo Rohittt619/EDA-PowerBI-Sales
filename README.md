@@ -1,4 +1,4 @@
-﻿# 📊 Sales EDA & Power BI Dashboard
+��﻿# 📊 Sales EDA & Power BI Dashboard
 
 > End-to-end sales analysis — Python EDA uncovering business insights, visualized in an interactive Power BI dashboard.
 
@@ -77,9 +77,9 @@ import numpy as np
 
 df = pd.read_csv('data/superstore.csv', encoding='latin-1')
 
-print(df.shape)          # (9994, 21)
+print(df.shape         # (9994, 21)
 print(df.dtypes)
-print(df.isnull().sum())  # check nulls
+print(df.isnull().sum() # check nulls
 
 # Fix date columns
 df['Order Date']  = pd.to_datetime(df['Order Date'], dayfirst=True)
@@ -356,7 +356,7 @@ openpyxl==3.1.2
 ## 👨‍💻 Author
 
 **Rohit Rathod** — Junior Data Analyst  
-📧 rrathod1101@gmail.com · [LinkedIn](https://linkedin.com/in/rohit-rathod-19442a228) · [GitHub](https://github.com/Rohittt619)
+📧 rrathod1101@gmail.com · [LinkedIn](https://linkedin.com/in/rohit-rathod-19442a228· [GitHub](https://github.com/Rohittt619)
 
 ---
 
