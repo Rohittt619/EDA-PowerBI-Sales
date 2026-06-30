@@ -105,7 +105,7 @@ No missing values found. Key engineered features: Order Year, Order Month, Ship 
 **No missing values found.** Key engineered features: `Order Year`, `Order Month`, `Ship Days`, `Is Loss`.
 
 ---
-
+```
 ## 📊 Exploratory Data Analysis
 
 ### 1. Sales & profit by region
